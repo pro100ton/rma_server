@@ -1,0 +1,24 @@
+version: '3.9' # Actual most recent version of docker compose
+services:
+  # in this section we define containers
+  web:
+    build: .
+    container_name: rma_api
+    ports:
+      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      # Volumes set up to auto sync with container inners
+      - .:/code
+    depends_on:
+      - db
+  db:
+    image: postgres:13
+    container_name: rma_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
+volumes:
+  postgres_data:
