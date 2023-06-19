@@ -2,14 +2,15 @@ version: '3.9' # Actual most recent version of docker compose
 services:
   # in this section we define containers
   web:
-    build: .
+    build: ./docker/django/
     container_name: rma_api
     ports:
       - 8000:8000
-    command: python manage.py runserver 0.0.0.0:8000
+    # command: python manage.py runserver 0.0.0.0:8000
     volumes:
       # Volumes set up to auto sync with container inners
       - .:/code
+    entrypoint: /docker/django_entrypoint.sh
     depends_on:
       - db
   db:
@@ -20,5 +21,7 @@ services:
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
 
+# Following lines indicates volumes, that will be persistent in between container launches
 volumes:
+  # This volume is used for rma_db container. This one will be persistent to prevent data loss fron db
   postgres_data:
